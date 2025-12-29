@@ -2,11 +2,33 @@ import { useEffect, useState } from 'react'
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [investments, setInvestments] = useState([]);
 
 const API_BASE = 'https://staging.api.s1nc.com.br/api/concept_beta/';
 const TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MTA2NTE1MCwicmVzb3VyY2VfdHlwZSI6IkNsaWVudCIsImNvbnN1bHRhbnRfaWQiOjkyOTcsImF1ZCI6ImNvbmNlcHQtYXBpIiwiZXhwIjoxNzY3MTA2MzczfQ.0uqQegZG9VCimTzfIu4AApIHFFKOe0uG73f6B1xv64o'
+
+const mockData = [
+  {
+    "id": 4763,
+    "name": "Teste investimento 1",
+    "broker": "C6 Bank",
+    "balanceAmount": 0,
+    "modality": {
+      "name": "CDB"
+    },
+    "liquidity": 0
+  },
+  {
+    "id": 4764,
+    "name": "Teste investimento 2",
+    "broker": "Bradesco",
+    "balanceAmount": 1090,
+    "modality": {
+      "name": "Poupança"
+    },
+    "liquidity": 0
+  }
+];
 
 useEffect(() => {
 fetch(`${API_BASE}/investments`, {
@@ -14,7 +36,7 @@ fetch(`${API_BASE}/investments`, {
   headers: {
     'Authorization': `Bearer ${TOKEN}`,
     'Content-Type': 'application/json',
-            'application-origin': 'W1 Client App 1.0'
+    'application-origin': 'W1 Client App 1.0'
   }
 })
   .then(response => {
@@ -23,26 +45,20 @@ fetch(`${API_BASE}/investments`, {
     }
     return response.json();
   })
-    .then(data => {
-      console.log(data.investments);
-      setInvestments(data.investments);
-      setLoading(false);
-    })
-    .catch(error => {
-      setError(error);
-      setLoading(false);
-    });
+  .then(data => {
+    setInvestments(data.investments);
+    setLoading(false);
+  })
+  .catch(() => {
+    console.log('Usando dados mockados');
+    setInvestments(mockData);
+    setLoading(false);
+  });
 }, [])
 
 if(loading){
   return(
     <div>Loading...</div>
-  )
-}
-
-if(error){
-  return(
-    <div>Error: {error.message}</div>
   )
 }
 
